@@ -11,27 +11,38 @@ RSpec.describe AnswersController, type: :controller do
       expect(assigns(:answer)).to be_a_new(Answer)
     end
 
-    it 'should belong to certain question' #  тут у меня вопрос - надо-ли такую спеку писaть?
-
     it 'renders new view' do
       expect(response).to render_template :new
     end
   end
 
   describe 'POST #create' do
+    let!(:count) { Answer.count }
+    
     context 'with valid attributes' do
+      before { post :create, params: { question_id: question.id, answer: attributes_for(:answer) } }
+
       it 'saves a new answer in the DB' do
-        count = Answer.count
-        expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer) } }.to change(Answer, :count).by(1)
+        expect(Answer.count).to eq count + 1
+      end
+
+      it 'new answer belongs to appropriate question' do
+        expect(assigns(:answer).question_id).to eq question.id
+      end
+
+      it 'redirects to show view' do # ну я его не писал потому что show не был в ТЗ:)
+        expect(response).to render_template :show
       end
     end
+
     context 'with invalid attributes' do
+      before { post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) } }
+
       it 'does not save the question' do
-        expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) } }.to_not change(Answer, :count)
+        expect(Answer.count).to eq count
       end
 
       it 're-renders new view' do
-        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) }
         expect(response).to render_template :new
       end
     end
