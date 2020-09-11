@@ -1,0 +1,7 @@
+p= link_to 'Ask question', new_question_path
+p= link_to 'Log out', destroy_user_session_path, method: :delete
+
+= @questions.each do |question|
+  = link_to "#{question.title}", question_path(question)
+  = ": #{question.body}, posted by #{question.author}"
+  p= link_to "Delete #{question.title}", question_path(question), method: :delete

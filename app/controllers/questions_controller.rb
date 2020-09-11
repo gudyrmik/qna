@@ -1,5 +1,5 @@
 class QuestionsController < ApplicationController
-
+  before_action :authenticate_user!, except: :index
   before_action :find_question, only: [:edit, :show, :update, :destroy]
 
   def index
@@ -18,8 +18,9 @@ class QuestionsController < ApplicationController
 
   def create
     @question = Question.new(question_params)
+    @question.author = current_user.email
     if @question.save
-      redirect_to @question
+      redirect_to @question, notice: 'Your question succsessfully created.'
     else
       render :new
     end
@@ -31,11 +32,11 @@ class QuestionsController < ApplicationController
     else
       render :edit
     end
+  end
 
-    def destroy
-      @question.destroy
-      redirect_to questions_path
-    end
+  def destroy
+    @question.destroy if @question.author == current_user.email
+    redirect_to questions_path
   end
 
   private
