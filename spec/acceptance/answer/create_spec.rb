@@ -11,11 +11,9 @@ feature 'User is able to create an answer to a question', %q{
 
   scenario 'Authenticated user answers a question' do
     login(user)
-    visit questions_path
-    click_on 'Ask question'
-    fill_in 'Title', with: 'Test question'
-    fill_in 'Body', with: 'text'
-    click_on 'Ask'
+    visit questions_path(question)
+
+    click_on 'MyString'
 
     fill_in 'Body', with: 'text'
     click_on 'Post answer'

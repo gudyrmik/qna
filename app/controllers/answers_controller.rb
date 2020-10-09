@@ -1,5 +1,6 @@
 class AnswersController < ApplicationController
 
+  before_action :authenticate_user!
   before_action :find_question, only: [:new, :create]
   before_action :find_answer, only: :destroy
 
@@ -12,7 +13,7 @@ class AnswersController < ApplicationController
     if @answer.save
       redirect_to question_path(@question)
     else
-      render :new
+      render question_path(@question)
     end
   end
 
