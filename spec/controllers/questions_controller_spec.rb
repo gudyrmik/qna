@@ -1,15 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
-  let(:question) { create(:question) }
   let(:user) { create(:user) }
+  let(:question) { create(:question, user_id: user.id) }
 
   describe 'GET #index' do
-    let(:questions) { create_list(:question, 10) }
     before { get :index }
 
     it 'populates an array of all questions' do
-      expect(assigns(:questions)).to match_array(questions)
+      expect(assigns(:questions)).to match_array(question)
     end
 
     it 'renders index view' do
@@ -18,6 +17,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #show' do
+    before { login(user) }
     before { get :show, params: { id: question } }
 
     it 'assigns requested question to @question' do
@@ -56,10 +56,12 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #create' do
+
     before { login(user) }
+
     context 'with valid attributes' do
       it 'saves a new question in the DB' do
-        expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
+        expect { post :create, params: { question: { title: 'Title', body: 'Body', user_id: user.id } } }.to change(Question, :count).by(1)
       end
 
       it 'redirects to show view' do
@@ -67,9 +69,10 @@ RSpec.describe QuestionsController, type: :controller do
         expect(response).to redirect_to assigns(:question)
       end
     end
+
     context 'with invalid attributes' do
       it 'does not save the question' do
-        expect { post :create, params: { question: attributes_for(:question, :invalid) } }.to_not change(Question, :count)
+        expect { post :create, params: { question: { title: nil, body: nil, user_id: nil } } }.to_not change(Question, :count)
       end
 
       it 're-renders new view' do
@@ -119,7 +122,7 @@ RSpec.describe QuestionsController, type: :controller do
     before { login(user) }
 
     it 'deletes the question' do
-      question = Question.create(title: 'Title 1', body: 'Body 1', author: user.email)
+      question = Question.create(title: 'Title', body: 'Body', user_id: user.id)
       expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
     end
 

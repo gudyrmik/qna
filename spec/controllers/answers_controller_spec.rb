@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let!(:user) { create(:user) }
-  let!(:question) { Question.create(title: 'Title 1', body: 'Body 1', author: user.email) }
-  let!(:answer) { question.answers.create(body: 'Body 1', author: user.email) }
+  let!(:question) { create(:question, user_id: user.id) }
+  let!(:answer) { question.answers.create(body: 'Body 1', user_id: user.id) }
 
   describe 'GET #new' do
     before { login(user) }
@@ -23,7 +23,7 @@ RSpec.describe AnswersController, type: :controller do
     let!(:count) { Answer.count }
 
     context 'with valid attributes' do
-      before { post :create, params: { question_id: question.id, body: 'Answer body' } }
+      before { post :create, params: { question_id: question.id, body: 'Answer body', user_id: user.id } }
 
       it 'saves a new answer in the DB' do
         expect(Answer.count).to eq count + 1
@@ -39,7 +39,7 @@ RSpec.describe AnswersController, type: :controller do
     end
 
     context 'with invalid attributes' do
-      before { post :create, params: { question_id: question.id, body: nil } }
+      before { post :create, params: { question_id: question.id, body: nil, user_id: nil } }
 
       it 'does not save the question' do
         expect(Answer.count).to eq count

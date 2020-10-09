@@ -18,7 +18,6 @@ class QuestionsController < ApplicationController
 
   def create
     @question = Question.new(question_params)
-    @question.author = current_user.email
     if @question.save
       redirect_to @question, notice: 'Your question succsessfully created.'
     else
@@ -35,7 +34,7 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    @question.destroy if @question.author == current_user.email
+    @question.destroy if current_user.is_author?(@question)
     redirect_to questions_path
   end
 
@@ -46,6 +45,6 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body)
+    params.require(:question).permit(:title, :body).merge!(user_id: current_user.id)
   end
 end

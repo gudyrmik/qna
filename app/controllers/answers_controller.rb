@@ -1,4 +1,5 @@
 class AnswersController < ApplicationController
+
   before_action :find_question, only: [:new, :create]
   before_action :find_answer, only: :destroy
 
@@ -8,7 +9,6 @@ class AnswersController < ApplicationController
 
   def create
     @answer = @question.answers.new(answer_params)
-    @answer.author = current_user.email
     if @answer.save
       redirect_to question_path(@question)
     else
@@ -17,7 +17,7 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    @answer.destroy if @answer.author == current_user.email
+    @answer.destroy if current_user.is_author?(@answer)
     redirect_to @answer.question
   end
 
@@ -32,6 +32,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.permit(:body)
+    params.permit(:body).merge!(user_id: current_user.id)
   end
 end

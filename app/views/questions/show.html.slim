@@ -1,8 +1,11 @@
-h1= @question.title
-p= @question.body
+p= render 'shared/nav'
+
+p= "Title: #{@question.title}"
+p= "Body: #{@question.body}"
+
 = @question.answers.each do |answer|
   p= answer.body
-  p= link_to "Delete #{answer.body}", answer_path(answer), method: :delete
+  p= link_to "Delete #{answer.body}", question_answer_path(answer), method: :delete if current_user.is_author?(answer)
 
 = form_with model: @answer, local: true, url: question_answers_path(@question) do |f|
   = f.label :body

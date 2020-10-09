@@ -5,28 +5,25 @@ feature 'User can remove its question', %q{
   As au authenticated user
   I'de like to be able to remove it
 } do
-  given(:user) { create(:user) }
-  given!(:others_question) { create(:question) }
-  background { login(user) }
+  given(:user1) { create(:user) }
+  given(:user2) { create(:user) }
+  given!(:others_question) { create(:question, user_id: user1.id) }
+  background { login(user2) }
 
   scenario "Authenticated user removes it's question" do
-    Question.create(title: 'Question 1', body: 'Body 1', author: user.email)
+    Question.create(title: 'Question', body: 'Body', user_id: user2.id)
     visit questions_path
-    click_on 'Delete Question 1'
-    click_on 'Delete MyString'
 
-    expect(page).not_to have_content 'Question 1'
-    expect(page).not_to have_content 'Body 1'
-    expect(page).to have_content 'MyString'
-    expect(page).to have_content 'MyText'
+    click_on 'Delete Question'
+
+    expect(page).to_not have_content 'Question'
+    expect(page).to_not have_content 'Delete MyString'
   end
 
   scenario "Authenticated user attempts to remove other's question" do
     visit questions_path
-    click_on 'Delete MyString'
 
-    expect(page).to have_content 'MyString'
-    expect(page).to have_content 'MyText'
+    expect(page).to_not have_content 'Delete MyString'
   end
 
 end

@@ -5,11 +5,12 @@ feature 'User can remove its answer', %q{
   As au authenticated user
   I'de like to be able to remove it
 } do
-  given(:user) { create(:user) }
+  given(:user1) { create(:user) }
+  given(:user2) { create(:user) }
 
   scenario "Authenticated user removes it's answer" do
-    login(user)
-    Question.create(title: 'Question 1', body: 'Body 1', author: user.email)
+    login(user1)
+    Question.create(title: 'Question 1', body: 'Body 1', user_id: user1.id)
     visit questions_path
     click_on 'Question 1'
 
@@ -21,13 +22,11 @@ feature 'User can remove its answer', %q{
   end
 
   scenario "Authenticated user attempts to remove other's answer" do
-    login(user)
-    question = Question.create(title: 'Question 1', body: 'Body 1', author: user.email)
-    Answer.create(question_id: question.id, body: 'others answer', author: 'others@qna.com')
+    login(user1)
+    question = Question.create(title: 'Question 1', body: 'Body 1', user_id: user2.id)
+    Answer.create(question_id: question.id, body: 'others answer', user_id: user2.id)
     visit questions_path
     click_on 'Question 1'
-    click_on 'Delete others answer'
-
-    expect(page).to have_content 'others answer'
+    expect(page).to_not have_content 'Delete others answer'
   end
 end

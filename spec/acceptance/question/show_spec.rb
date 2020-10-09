@@ -6,7 +6,7 @@ feature 'User can see question and answers to it', %q{
   I'de like to be able to see question and all it's answers
 } do
   given(:user) { create(:user) }
-  given!(:question) { create(:question) }
+  given!(:question) { create(:question, user_id: user.id) }
 
   scenario 'Authenticated user opens a question' do
     login(user)
