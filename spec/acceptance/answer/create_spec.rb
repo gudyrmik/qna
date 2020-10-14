@@ -9,7 +9,7 @@ feature 'User is able to create an answer to a question', %q{
   given(:user) { create(:user) }
   given!(:question) { create(:question, user_id: user.id) }
 
-  scenario 'Authenticated user answers a question' do
+  scenario 'Authenticated user creates correct answer', js: true do
     login(user)
     visit questions_path(question)
 
@@ -18,6 +18,15 @@ feature 'User is able to create an answer to a question', %q{
     fill_in 'Body', with: 'text'
     click_on 'Post answer'
     expect(page).to have_content 'text'
+  end
+
+  scenario 'Authenticated user creates invalid answer', js: true do
+    login(user)
+    visit questions_path(question)
+
+    click_on 'MyString'
+    click_on 'Post answer'
+    expect(page).to have_content "Body can't be blank"
   end
 
   scenario 'Unauthenticated user attempts to answer a question' do

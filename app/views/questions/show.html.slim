@@ -1,11 +1,13 @@
 p= "Title: #{@question.title}"
 p= "Body: #{@question.body}"
 
-= @question.answers.each do |answer|
-  p= answer.body
-  p= link_to "Delete #{answer.body}", question_answer_path(answer), method: :delete if current_user.is_author?(answer)
+p= "Answers:"
+.answers
+  = render @question.answers
 
-= form_with model: @answer, local: true, url: question_answers_path(@question) do |f|
+.answer-errors
+
+= form_with model: [@question, @answer], class: 'new-answer' do |f|
   = f.label :body
   = f.text_area :body
   = f.submit 'Post answer'

@@ -1,25 +1,31 @@
 class AnswersController < ApplicationController
 
   before_action :authenticate_user!
-  before_action :find_question, only: [:new, :create]
-  before_action :find_answer, only: :destroy
-
-  def new
-    @answer = @question.answers.new
-  end
+  before_action :find_question, only: :create
+  before_action :find_answer, only: [:destroy, :update]
 
   def create
-    @answer = @question.answers.new(answer_params)
-    if @answer.save
-      redirect_to question_path(@question)
-    else
-      render question_path(@question)
-    end
+    @answer = @question.answers.create(answer_params)
   end
 
   def destroy
+    @question = @answer.question
     @answer.destroy if current_user.is_author?(@answer)
-    redirect_to @answer.question
+  end
+
+  def update
+    if current_user.is_author?(@answer)
+      @question = @answer.question
+
+      new_params = answer_params
+
+      if current_user.is_author?(@question) == false && new_params[:best] == '1'
+        new_params[:best] == '0'
+      end
+
+      @answer.assure_best_uniq if new_params[:best] == '1'
+      @answer.update(new_params)
+    end
   end
 
   private
@@ -33,6 +39,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.permit(:body).merge!(user_id: current_user.id)
+    params.require(:answer).permit(:body, :best).merge!(user_id: current_user.id)
   end
 end
