@@ -1,13 +1,12 @@
 .answer
   p= answer.body
 
-  - if user_signed_in? and !answer.id.nil? and current_user.is_author?(answer)
+  - if current_user&.is_author?(answer) && answer.persisted?
     = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id, best: answer.best }
+    p= link_to "Mark as best", mark_as_best_answer_path(answer), method: :post
     p= link_to "Delete", answer_path(answer), method: :delete, remote: true
 
 = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
   = f.label :body, 'Your answer'
   = f.text_area :body
-  = f.label :best
-  = f.check_box :best
   = f.submit 'Save'

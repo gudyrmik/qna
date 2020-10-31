@@ -2,7 +2,7 @@ class AnswersController < ApplicationController
 
   before_action :authenticate_user!
   before_action :find_question, only: :create
-  before_action :find_answer, only: [:destroy, :update]
+  before_action :find_answer, only: [:destroy, :update, :mark_as_best]
 
   def create
     @answer = @question.answers.create(answer_params)
@@ -13,18 +13,17 @@ class AnswersController < ApplicationController
     @answer.destroy if current_user.is_author?(@answer)
   end
 
+  def mark_as_best
+    @question = @answer.question
+
+    @answer.mark_as_best
+    redirect_to @question
+  end
+
   def update
     if current_user.is_author?(@answer)
       @question = @answer.question
-
-      new_params = answer_params
-
-      if current_user.is_author?(@question) == false && new_params[:best] == '1'
-        new_params[:best] == '0'
-      end
-
-      @answer.assure_best_uniq if new_params[:best] == '1'
-      @answer.update(new_params)
+      @answer.update(answer_params)
     end
   end
 

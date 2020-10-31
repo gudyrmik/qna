@@ -11,11 +11,11 @@ $(document).on('turbolinks:load', function() {
 
 function sortAnswers() {
   //console.log('sortAnswers!!!')
-  var answers = document.getElementById('ans').getElementsByClassName('answer')
-  console.log(answers)
+  var answers = document.getElementsByClassName('answer')
+  //console.log(answers)
   var answers_array = Array.prototype.slice.call(answers)
 
-  console.log(answers_array)
+  //console.log(answers_array)
 
   answers_array.sort(function(a, b) {
     return a.children[1].getAttribute('data-best') < b.children[1].getAttribute('data-best')
