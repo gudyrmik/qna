@@ -2,7 +2,7 @@ p= "Title: #{@question.title}"
 p= "Body: #{@question.body}"
 
 p= "Answers:"
-.answers
+.answers#ans
   = render @question.answers
 
 .answer-errors

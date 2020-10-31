@@ -1,8 +1,9 @@
-p= answer.body
+.answer
+  p= answer.body
 
-- if user_signed_in? and !answer.id.nil? and current_user.is_author?(answer)
-  = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id }
-  p= link_to "Delete", answer_path(answer), method: :delete, remote: true
+  - if user_signed_in? and !answer.id.nil? and current_user.is_author?(answer)
+    = link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id, best: answer.best }
+    p= link_to "Delete", answer_path(answer), method: :delete, remote: true
 
 = form_with model: answer, class: 'hidden', html: { id: "edit-answer-#{answer.id}" } do |f|
   = f.label :body, 'Your answer'
