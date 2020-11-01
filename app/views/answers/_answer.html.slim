@@ -1,4 +1,4 @@
-.answer
+div class = "answer_#{answer.id}"
   p= answer.body
 
   - if current_user&.is_author?(answer) && answer.persisted?

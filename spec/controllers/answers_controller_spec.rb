@@ -42,12 +42,7 @@ RSpec.describe AnswersController, type: :controller do
     before { login(user) }
 
     it 'deletes the answer' do
-      expect { delete :destroy, params: { id: answer, question_id: question.id } }.to change(Answer, :count).by(-1)
-    end
-
-    it 'redirects to question\'s show' do
-      delete :destroy, params: { id: answer, question_id: question.id }
-      expect(response).to redirect_to question_path(question)
+      expect { delete :destroy, params: { id: answer, question_id: question.id }, format: :js }.to change(Answer, :count).by(-1)
     end
   end
 
@@ -79,6 +74,27 @@ RSpec.describe AnswersController, type: :controller do
         patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js
         expect(response).to render_template :update
       end
+    end
+  end
+
+  describe 'POST #mark_as_best' do
+
+    let!(:answer2) { create(:answer, question: question, user: user) }
+    let!(:answer3) { create(:answer, question: question, user: user) }
+
+    before { login(user) }
+
+    it 'sets best attribute of an answer to true' do
+      post :mark_as_best, params: { id: answer, question_id: question.id }
+      expect(assigns(:answer).best).to eq true
+    end
+
+    it 'makes sure that only one answer to current question has best attribute set on true' do
+      post :mark_as_best, params: { id: answer }
+
+      expect(assigns(:answer).best).to eq true
+      expect(answer2.best).to eq false
+      expect(answer3.best).to eq false
     end
   end
 end

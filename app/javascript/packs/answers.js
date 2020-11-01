@@ -1,4 +1,8 @@
-console.log('answers.js!!!')
+/*
+ты обо мне несправедливого мнения, про scope метод я подумал с самого начала,
+но так задание же на ajax, вот я и решил пойти путем джаваскрипта
+*/
+
 $(document).on('turbolinks:load', function() {
   $('.answers').on('click', '.edit-answer-link', function(e) {
     e.preventDefault();
@@ -10,12 +14,8 @@ $(document).on('turbolinks:load', function() {
 });
 
 function sortAnswers() {
-  //console.log('sortAnswers!!!')
   var answers = document.getElementsByClassName('answer')
-  //console.log(answers)
   var answers_array = Array.prototype.slice.call(answers)
-
-  //console.log(answers_array)
 
   answers_array.sort(function(a, b) {
     return a.children[1].getAttribute('data-best') < b.children[1].getAttribute('data-best')

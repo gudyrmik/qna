@@ -15,9 +15,11 @@ feature 'User is able to create an answer to a question', %q{
 
     click_on 'MyString'
 
-    fill_in 'Body', with: 'text'
+    fill_in 'Body', with: 'Answer text'
     click_on 'Post answer'
-    expect(page).to have_content 'text'
+
+    save_and_open_page
+    expect(page).to have_content 'Answer text'
   end
 
   scenario 'Authenticated user creates invalid answer', js: true do

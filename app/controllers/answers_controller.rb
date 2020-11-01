@@ -15,8 +15,7 @@ class AnswersController < ApplicationController
 
   def mark_as_best
     @question = @answer.question
-
-    @answer.mark_as_best
+    @answer.mark_as_best if current_user.is_author?(@question)
     redirect_to @question
   end
 
