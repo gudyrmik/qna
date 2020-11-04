@@ -1,0 +1,20 @@
+p= "Edit: #{@question.title}"
+p= "Body: #{@question.body}"
+
+- if @question.files.attached?
+  - @question.files.each do |file|
+    p= link_to file.filename.to_s, url_for(file)
+
+.answer-errors
+
+= form_with model: @question, local: true do |f|
+  p
+    = f.label :title
+    = f.text_field :title
+  p
+    = f.label :body
+    = f.text_area :body
+  p
+    = f.label :files
+    = f.file_field :files, multiple: true
+  p= f.submit 'Ask'

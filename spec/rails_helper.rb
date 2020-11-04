@@ -72,6 +72,10 @@ RSpec.configure do |config|
     browser_options.args << '--headless'
     Capybara::Selenium::Driver.new(app, browser: :firefox, options: browser_options)
   end
+
+  config.after(:all) do
+    FileUtils.rm_rf("#{Rails.root}/tmp/storage")
+  end
 end
 
 Shoulda::Matchers.configure do |config|

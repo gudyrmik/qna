@@ -1,6 +1,12 @@
 p= "Title: #{@question.title}"
 p= "Body: #{@question.body}"
 
+- if @question.files.attached?
+  - @question.files.each do |file|
+    p= link_to file.filename.to_s, url_for(file)
+    '
+    = link_to 'Delete', delete_attachment_question_path(@question, delete_id: file.id), method: :delete
+
 p= "Answers:"
 .answers#ans
   = render @question.answers
@@ -10,4 +16,6 @@ p= "Answers:"
 = form_with model: [@question, @answer], class: 'new-answer' do |f|
   = f.label :body
   = f.text_area :body
+  = f.label :files
+  = f.file_field :files, multiple: true, direct_upload: true
   = f.submit 'Post answer'
