@@ -66,6 +66,16 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  Capybara.register_driver :selenium do |app|
+    browser_options = ::Selenium::WebDriver::Firefox::Options.new()
+    browser_options.args << '--headless'
+    Capybara::Selenium::Driver.new(app, browser: :firefox, options: browser_options)
+  end
+
+  config.after(:all) do
+    FileUtils.rm_rf("#{Rails.root}/tmp/storage")
+  end
 end
 
 Shoulda::Matchers.configure do |config|

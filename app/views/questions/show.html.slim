@@ -1,11 +1,21 @@
 p= "Title: #{@question.title}"
 p= "Body: #{@question.body}"
 
-= @question.answers.each do |answer|
-  p= answer.body
-  p= link_to "Delete #{answer.body}", question_answer_path(answer), method: :delete if current_user.is_author?(answer)
+- if @question.files.attached?
+  - @question.files.each do |file|
+    p= link_to file.filename.to_s, url_for(file)
+    '
+    = link_to 'Delete', delete_attachment_question_path(@question, delete_id: file.id), method: :delete
 
-= form_with model: @answer, local: true, url: question_answers_path(@question) do |f|
+p= "Answers:"
+.answers#ans
+  = render @question.answers
+
+.answer-errors
+
+= form_with model: [@question, @answer], class: 'new-answer' do |f|
   = f.label :body
   = f.text_area :body
+  = f.label :files
+  = f.file_field :files, multiple: true, direct_upload: true
   = f.submit 'Post answer'
