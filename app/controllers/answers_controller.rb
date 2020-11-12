@@ -2,7 +2,7 @@ class AnswersController < ApplicationController
 
   before_action :authenticate_user!
   before_action :find_question, only: :create
-  before_action :find_answer, only: [:destroy, :update, :mark_as_best]
+  before_action :find_answer, only: [:destroy, :update, :mark_as_best, :delete_attachment]
 
   def create
     @answer = @question.answers.create(answer_params)
@@ -26,6 +26,13 @@ class AnswersController < ApplicationController
     end
   end
 
+  def delete_attachment
+    if current_user.is_author?(@answer)
+      @answer.delete_attachment(params[:delete_id])
+      redirect_to @answer.question
+    end
+  end
+
   private
 
   def find_question
@@ -33,10 +40,10 @@ class AnswersController < ApplicationController
   end
 
   def find_answer
-    @answer = Answer.find(params[:id])
+    @answer = Answer.with_attached_files.find(params[:id])
   end
 
   def answer_params
-    params.require(:answer).permit(:body, :best).merge!(user_id: current_user.id)
+    params.require(:answer).permit(:body, :best, files: []).merge!(user_id: current_user.id)
   end
 end

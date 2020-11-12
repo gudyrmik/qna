@@ -19,14 +19,16 @@ feature 'User can edit his answer', %q{
     expect(page).to_not have_link('Edit')
   end
 
-  describe 'Authenticated user' do
+  describe 'Authenticated user do legit action' do
 
-    scenario 'edits his answer', js: true do
+    background do
       login(user)
       visit question_path(question)
 
       click_on('Edit')
+    end
 
+    scenario 'edits his answer', js: true do
       within '.answers' do
         fill_in 'Your answer', with: 'Edited answer'
         click_on('Save')
@@ -37,11 +39,6 @@ feature 'User can edit his answer', %q{
     end
 
     scenario 'edits his answer with errors', js: true do
-      login(user)
-      visit question_path(question)
-
-      click_on('Edit')
-
       within '.answers' do
         fill_in 'Your answer', with: nil
         click_on('Save')
@@ -49,7 +46,23 @@ feature 'User can edit his answer', %q{
       expect(page).to have_content("Body can't be blank")
     end
 
-    scenario "tries to edit other user's answer", js: true do
+    scenario 'edits his answer with attachments', js: true do
+      within '.answers' do
+        fill_in 'Your answer', with: 'Edited answer'
+        attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+
+        click_on('Save')
+
+        expect(page).to have_content('Edited answer')
+        expect(page).to_not have_selector('textarea')
+        expect(page).to have_link 'rails_helper.rb'
+        expect(page).to have_link 'spec_helper.rb'
+      end
+    end
+  end
+
+  describe 'Authenticated user tries' do
+    scenario "to edit other user's answer", js: true do
       login(user)
       visit question_path(question2)
       save_and_open_page
