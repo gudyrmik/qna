@@ -5,6 +5,7 @@ p= "Body: #{@question.body}"
   - @question.files.each do |file|
     p= link_to file.filename.to_s, url_for(file)
     '
+    - if current_user&.is_author?(question)
     = link_to 'Delete', delete_attachment_question_path(@question, delete_id: file.id), method: :delete
 
 p= "Answers:"
