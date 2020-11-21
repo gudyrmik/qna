@@ -7,6 +7,13 @@ div class = "answer_#{answer.id}"
       '
       = link_to 'Delete', delete_attachment_answer_path(@answer, delete_id: file.id), method: :delete
 
+  .links
+    p Links:
+    ul
+      - answer.links.each do |link|
+        li= link_to link.name, link.url
+
+
   - if current_user&.is_author?(answer) && answer.persisted?
     p= link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id, best: answer.best }
     p= link_to "Mark as best", mark_as_best_answer_path(answer), method: :post
