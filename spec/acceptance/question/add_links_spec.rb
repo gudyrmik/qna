@@ -12,12 +12,13 @@ feature 'User can add links to question', %q{
   scenario 'User adds link when asks question' do
     login(user)
     visit questions_path
+    click_on 'Ask question'
 
     fill_in 'Title', with: 'Test question'
     fill_in 'Body', with: 'text'
 
     fill_in 'Link name', with: 'Google'
-    fill_in 'URL', with: link
+    fill_in 'Url', with: link
 
     click_on 'Ask'
 

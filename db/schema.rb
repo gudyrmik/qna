@@ -50,8 +50,10 @@ ActiveRecord::Schema.define(version: 2020_11_21_193343) do
   create_table "links", force: :cascade do |t|
     t.string "url"
     t.string "name"
+    t.bigint "question_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["question_id"], name: "index_links_on_question_id"
   end
 
   create_table "questions", force: :cascade do |t|
@@ -78,5 +80,6 @@ ActiveRecord::Schema.define(version: 2020_11_21_193343) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "answers", "questions"
   add_foreign_key "answers", "users"
+  add_foreign_key "links", "questions"
   add_foreign_key "questions", "users"
 end
