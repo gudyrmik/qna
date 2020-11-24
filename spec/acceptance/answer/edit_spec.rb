@@ -65,7 +65,6 @@ feature 'User can edit his answer', %q{
     scenario "to edit other user's answer", js: true do
       login(user)
       visit question_path(question2)
-      save_and_open_page
       expect(page).to_not have_link('Edit')
     end
   end

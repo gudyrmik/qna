@@ -1,6 +1,10 @@
 FactoryBot.define do
   factory :link do
-    url { "MyString" }
-    name { "MyString" }
+    name { "Pornhub" }
+    url { 'https://www.pornhub.com/'}
+
+    trait :linkable do
+      association :linkable, factory: :answer
+    end
   end
 end

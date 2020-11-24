@@ -10,8 +10,7 @@ div class = "answer_#{answer.id}"
   .links
     p Links:
     ul
-      - answer.links.each do |link|
-        li= link_to link.name, link.url
+      = render 'shared/links_list', resource: @answer
 
 
   - if current_user&.is_author?(answer) && answer.persisted?

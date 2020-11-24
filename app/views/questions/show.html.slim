@@ -11,8 +11,7 @@ p= "Body: #{@question.body}"
 .links
   p Links:
   ul
-    - @question.links.each do |link|
-      li= link_to link.name, link.url
+    = render 'shared/links_list', resource: @question
 
 p= "Answers:"
 .answers#ans
@@ -27,13 +26,6 @@ p= "Answers:"
   = f.file_field :files, multiple: true, direct_upload: true
 
   p Links:
-  p
-    = f.fields_for :links do |l|
-      p
-        = l.label :name, 'Link name'
-        = l.text_field :name
-      p
-        = l.label :url
-        = l.text_field :url
+  = render 'shared/add_links', f: f
 
   = f.submit 'Post answer'

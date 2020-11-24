@@ -18,6 +18,12 @@ feature 'User can add links to answer', %q{
     click_on 'MyString'
 
     fill_in 'Body', with: 'Answer text'
+
+    click_on 'Add link'
+
+    fill_in 'Link name', with: 'Pornhub'
+    fill_in 'Url', with: link
+
     fill_in 'Link name', with: 'Google'
     fill_in 'Url', with: link
     click_on 'Post answer'

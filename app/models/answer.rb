@@ -7,7 +7,7 @@ class Answer < ApplicationRecord
 
   has_many :links, dependent: :destroy, as: :linkable
 
-  accepts_nested_attributes_for :links, reject_if: :all_blank
+  accepts_nested_attributes_for :links, reject_if: :all_blank, allow_destroy: true
 
   validates :body, presence: true
 
@@ -15,6 +15,7 @@ class Answer < ApplicationRecord
     transaction do
       self.class.where(question_id: self.question_id).update_all(best: false)
       update(best: true)
+      question.reward&.update!(user: user)
     end
   end
 

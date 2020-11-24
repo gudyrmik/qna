@@ -17,4 +17,6 @@ p= "Body: #{@question.body}"
   p
     = f.label :files
     = f.file_field :files, multiple: true
+  p Links:
+  = render 'shared/add_links', f: f
   p= f.submit 'Ask'

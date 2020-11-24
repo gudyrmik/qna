@@ -38,3 +38,5 @@ yarn-debug.log*
 
 .idea
 .generators
+
+/config/local_env.yml

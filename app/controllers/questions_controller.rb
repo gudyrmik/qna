@@ -15,6 +15,7 @@ class QuestionsController < ApplicationController
   def new
     @question = Question.new
     @question.links.new
+    @question.reward = Reward.new
   end
 
   def edit
@@ -60,6 +61,8 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, files: [], links_attributes: [:name, :url]).merge!(user_id: current_user.id)
+    params.require(:question).permit(:title, :body, files: [],
+                                      links_attributes: [:name, :url, :_destroy],
+                                      reward_attributes: [:title, :image]).merge!(user_id: current_user.id)
   end
 end

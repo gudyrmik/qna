@@ -6,6 +6,7 @@ class AnswersController < ApplicationController
 
   def create
     @answer = @question.answers.create(answer_params)
+    @answer.save
   end
 
   def destroy
@@ -44,6 +45,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, :best, files: [] ,links_attributes: [:name, :url]).merge!(user_id: current_user.id)
+    params.require(:answer).permit(:body, :best, files: [] ,links_attributes: [:name, :url, :_destroy]).merge!(user_id: current_user.id)
   end
 end

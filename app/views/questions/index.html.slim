@@ -1,4 +1,6 @@
-p= link_to 'Ask question', new_question_path if user_signed_in?
+- if user_signed_in?
+  p= link_to 'Ask question', new_question_path
+  p= link_to 'Your rewards', rewards_path
 
 - unless @questions.nil?
   - @questions.each do |question|

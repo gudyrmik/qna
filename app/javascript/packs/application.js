@@ -3,6 +3,7 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 
+require("@nathanvda/cocoon")
 require("@rails/ujs").start()
 require("turbolinks").start()
 require("@rails/activestorage").start()
@@ -20,4 +21,3 @@ window.$ = window.jQuery = jQuery;
 // const imagePath = (name) => images(name, true)
 
 require("packs/answers")
-require("activestorage")

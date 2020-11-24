@@ -7,22 +7,25 @@ feature 'User can add links to question', %q{
 } do
 
   given(:user) { create(:user) }
-  given(:link) { 'https://www.google.com/' }
+  given(:link) { 'https://www.pornhub.com/' }
 
-  scenario 'User adds link when asks question' do
+  scenario 'User adds link when asks question', js: true do
     login(user)
     visit questions_path
+
     click_on 'Ask question'
 
     fill_in 'Title', with: 'Test question'
-    fill_in 'Body', with: 'text'
+    fill_in 'Body', with: 'Which site is the best?'
 
-    fill_in 'Link name', with: 'Google'
+    click_on 'Add link'
+
+    fill_in 'Link name', with: 'Pornhub'
     fill_in 'Url', with: link
 
     click_on 'Ask'
-
-    expect(page).to have_link 'Google', href: link
+    expect(page).to have_link 'Pornhub', href: link
   end
 
 end
+
