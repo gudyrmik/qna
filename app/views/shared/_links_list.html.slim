@@ -2,7 +2,7 @@
   - if link.persisted?
     div id = "link_#{link.id}"
       - if link.gist_id.present?
-        li= link.content
+        li= javascript_include_tag link.url+".js"
       - else
         li= link_to link.name, link.url
 

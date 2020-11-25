@@ -16,6 +16,7 @@ class QuestionsController < ApplicationController
     @question = Question.new
     @question.links.new
     @question.reward = Reward.new
+    @question.reward[user: nil]
   end
 
   def edit
