@@ -6,7 +6,9 @@ class Link < ApplicationRecord
   validates :url, format: { with: URI::regexp(%w[http https]), message: "Invalid URL"}
 
   def gist_id
-    url.match(/https:\/\/gist.github.com\/\w+\/(\w+)/)[1] rescue nil
+    if res = url.match(/https:\/\/gist.github.com\/\w+\/(\w+)/)
+      res[0]
+    end
   end
 
 end
