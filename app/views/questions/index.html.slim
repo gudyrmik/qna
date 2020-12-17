@@ -2,9 +2,12 @@
   p= link_to 'Ask question', new_question_path
   p= link_to 'Your rewards', rewards_path
 
-- unless @questions.nil?
-  - @questions.each do |question|
-    p= link_to "#{question.title}", question_path(question)
-    - if current_user&.is_author?(question)
-      p= link_to "Edit #{question.title}", edit_question_path(question)
-      p= link_to "Delete #{question.title}", question_path(question), method: :delete
+  .questions
+    - unless @questions.nil?
+      - @questions.each do |question|
+        div id = "question_#{question.id}"
+        p= link_to "#{question.title}", question_path(question)
+        = render 'shared/likes', resource: question
+        - if current_user&.is_author?(question)
+          p= link_to "Edit #{question.title}", edit_question_path(question), class: 'edit-question-link', data: { question_id: question.id }
+          p= link_to "Delete #{question.title}", question_path(question), method: :delete

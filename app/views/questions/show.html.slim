@@ -1,6 +1,8 @@
 p= "Title: #{@question.title}"
 p= "Body: #{@question.body}"
 
+= render 'shared/likes', resource: @question
+
 - if @question.files.attached?
   - @question.files.each do |file|
     p= link_to file.filename.to_s, url_for(file)

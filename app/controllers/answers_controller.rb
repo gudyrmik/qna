@@ -4,6 +4,8 @@ class AnswersController < ApplicationController
   before_action :find_question, only: :create
   before_action :find_answer, only: [:destroy, :update, :mark_as_best, :delete_attachment]
 
+  include Likes
+
   def create
     @answer = @question.answers.create(answer_params)
   end

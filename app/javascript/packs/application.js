@@ -20,4 +20,6 @@ window.$ = window.jQuery = jQuery;
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
 
+require("packs/questions")
 require("packs/answers")
+require("packs/likes")

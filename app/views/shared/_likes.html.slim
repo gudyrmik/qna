@@ -1,0 +1,22 @@
+-if current_user && !current_user.is_author?(resource)
+  .like
+    p
+      = link_to 'Like', polymorphic_path(resource, action: :like),
+              method: :patch,
+              data: { type: :json },
+              remote: true
+
+    p
+      = link_to 'Dislike', polymorphic_path(resource, action: :dislike),
+              method: :patch,
+              data: { type: :json },
+              remote: true
+
+    p.rating
+      = resource.rating
+
+    p
+      = link_to 'Discard like', polymorphic_path(resource, action: :discard_like),
+              method: :delete,
+              data: { type: :json },
+              remote: true

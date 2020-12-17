@@ -1,4 +1,5 @@
 class Question < ApplicationRecord
+  include Likeable
 
   has_many :answers, dependent: :destroy
   has_many :links, dependent: :destroy, as: :linkable

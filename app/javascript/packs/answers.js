@@ -1,7 +1,3 @@
-/*
-ты обо мне несправедливого мнения, про scope метод я подумал с самого начала,
-но так задание же на ajax, вот я и решил пойти путем джаваскрипта
-*/
 
 $(document).on('turbolinks:load', function() {
   $('.answers').on('click', '.edit-answer-link', function(e) {
