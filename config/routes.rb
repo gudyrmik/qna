@@ -2,10 +2,18 @@ Rails.application.routes.draw do
   devise_for :users
   root to: "questions#index"
 
-  resources :questions do
+  concern :likes do
+    member do
+      patch :like
+      patch :dislike
+      delete :discard_like
+    end
+  end
+
+  resources :questions, concerns: :likes do
     delete :delete_attachment, on: :member
 
-    resources :answers, shallow: true, only: [:create, :destroy, :update] do
+    resources :answers, concerns: :likes, shallow: true, only: [:create, :destroy, :update] do
       member do
         post :mark_as_best
         delete :delete_attachment
