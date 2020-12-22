@@ -1,4 +1,4 @@
--if current_user && !current_user.is_author?(resource)
+- unless current_user&.is_author?(resource)
   .like
     p
       = link_to 'Like', polymorphic_path(resource, action: :like),
