@@ -3,6 +3,15 @@ p= "Body: #{@question.body}"
 
 = render 'shared/likes', resource: @question
 
+.comments
+  = render @question.comments
+  - if user_signed_in?
+    = form_with model: [@question, @question.comments.build], url: polymorphic_path([:create_comment, @question]) do |f|
+      p
+        = f.label :body
+        = f.text_area :body
+        = f.submit 'Comment'
+
 - if @question.files.attached?
   - @question.files.each do |file|
     p= link_to file.filename.to_s, url_for(file)

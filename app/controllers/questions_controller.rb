@@ -2,8 +2,10 @@ class QuestionsController < ApplicationController
 
   before_action :authenticate_user!, except: :index
   before_action :find_question, only: [:edit, :show, :update, :destroy, :delete_attachment]
+  after_action :broadcast_question, only: :create
 
   include Likes
+  include Comments
 
   def index
     @questions = Question.all
@@ -12,6 +14,7 @@ class QuestionsController < ApplicationController
   def show
     @answer = Answer.new
     @answer.links.new
+    gon.question_id = @question.id
   end
 
   def new
@@ -54,6 +57,10 @@ class QuestionsController < ApplicationController
   end
 
   private
+
+  def broadcast_question
+    ActionCable.server.broadcast('questions_stream', question: @question) unless @question.errors.any?
+  end
 
   def find_question
     @question = Question.with_attached_files.find(params[:id])

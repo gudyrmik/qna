@@ -1,6 +1,15 @@
 div class = "answer_#{answer.id}"
   p= answer.body
 
+  .comments
+    = render @answer.comments
+    - if user_signed_in?
+      = form_with model: [answer, answer.comments.build], url: polymorphic_path([:create_comment, answer]) do |f|
+        p
+          = f.label :body
+          = f.text_area :body
+          = f.submit 'Comment'
+
   = render 'shared/likes', resource: answer
 
   - if @answer.files.attached?
@@ -13,7 +22,6 @@ div class = "answer_#{answer.id}"
     p Links:
     ul
       = render 'shared/links_list', resource: @answer
-
 
   - if current_user&.is_author?(answer) && answer.persisted?
     p= link_to 'Edit', '#', class: 'edit-answer-link', data: { answer_id: answer.id, best: answer.best }

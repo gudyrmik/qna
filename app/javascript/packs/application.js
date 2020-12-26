@@ -23,3 +23,4 @@ window.$ = window.jQuery = jQuery;
 require("packs/questions")
 require("packs/answers")
 require("packs/likes")
+

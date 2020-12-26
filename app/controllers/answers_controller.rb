@@ -3,8 +3,10 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_question, only: :create
   before_action :find_answer, only: [:destroy, :update, :mark_as_best, :delete_attachment]
+  after_action :broadcast_answer, only: :create
 
   include Likes
+  include Comments
 
   def create
     @answer = @question.answers.create(answer_params)
@@ -36,6 +38,10 @@ class AnswersController < ApplicationController
   end
 
   private
+
+  def broadcast_answer
+    ActionCable.server.broadcast("answers_stream_#{@question.id}", answer: @answer) unless @answer.errors.any?
+  end
 
   def find_question
     @question = Question.find(params[:question_id])

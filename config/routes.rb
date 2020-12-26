@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   devise_for :users
   root to: "questions#index"
 
-  concern :likes do
+  concern :likable do
     member do
       patch :like
       patch :dislike
@@ -10,10 +10,14 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :questions, concerns: :likes do
+  concern :commentable do
+    post :create_comment, on: :member
+  end
+
+  resources :questions, concerns: %i[likable commentable] do
     delete :delete_attachment, on: :member
 
-    resources :answers, concerns: :likes, shallow: true, only: [:create, :destroy, :update] do
+    resources :answers, concerns: %i[likable commentable], shallow: true, only: [:create, :destroy, :update] do
       member do
         post :mark_as_best
         delete :delete_attachment
