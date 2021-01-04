@@ -9,6 +9,7 @@ RSpec.describe QuestionsController, type: :controller do
       before { get :index }
 
       it 'populates an array of all questions' do
+        questions_array = create_list(:question, 100)
         expect(assigns(:questions)).to match_array(questions_array)
       end
 
@@ -16,11 +17,59 @@ RSpec.describe QuestionsController, type: :controller do
         expect(response).to render_template :index
       end
     end
+
+    describe 'access denied for' do
+      let(:question) { create(:question) }
+
+      it 'GET #show' do
+        get :show, params: { id: question }
+        expect(response).to redirect_to new_user_session_path
+      end
+
+      it 'GET #new' do
+        get :new
+        expect(response).to redirect_to new_user_session_path
+      end
+
+      it 'GET #edit' do
+        get :edit, params: { id: question }
+        expect(response).to redirect_to new_user_session_path
+      end
+
+      it 'POST #create' do
+        post :create, params: { question: attributes_for(:question) }
+        expect(response).to redirect_to new_user_session_path
+      end
+
+      it 'PATCH #update' do
+        patch :update, params: { id: question, question: attributes_for(:question) }
+        expect(response).to redirect_to new_user_session_path
+      end
+
+      it 'DELETE #destroy' do
+        delete :destroy, params: { id: question }
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
   end
 
   context 'Authenticated clearance' do
     let(:question) { create(:question) }
     before { login(user) }
+
+    describe 'GET #index' do
+      let(:questions_array) { create_list(:question, rand(10...20)) }
+      before { get :index }
+
+      it 'populates an array of all questions' do
+        questions_array = create_list(:question, 100)
+        expect(assigns(:questions)).to match_array(questions_array)
+      end
+
+      it 'renders index view' do
+        expect(response).to render_template :index
+      end
+    end
 
     describe 'GET #show' do
       before { get :show, params: { id: question } }

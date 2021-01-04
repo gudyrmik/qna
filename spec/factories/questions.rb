@@ -5,7 +5,7 @@ FactoryBot.define do
     body { FFaker::Book.description }
 
     trait :invalid do
-      user
+      user { create :user }
       title { nil }
       body { nil }
     end
