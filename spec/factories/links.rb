@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :link do
-    name { "Pornhub" }
-    url { 'https://www.pornhub.com/'}
+    name { FFaker::Internet.user_name }
+    url { FFaker::Internet.http_url }
 
     trait :linkable do
       association :linkable, factory: :answer

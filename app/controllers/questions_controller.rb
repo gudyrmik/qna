@@ -1,5 +1,4 @@
 class QuestionsController < ApplicationController
-
   before_action :authenticate_user!, except: :index
   before_action :find_question, only: [:edit, :show, :update, :destroy, :delete_attachment]
   after_action :broadcast_question, only: :create

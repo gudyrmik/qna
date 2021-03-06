@@ -1,100 +1,102 @@
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
-  let!(:user) { create(:user) }
-  let!(:question) { create(:question, user: user) }
-  let!(:answer) { create(:answer, question: question, user: user) }
+  let(:user) { create(:user) }
+  let(:question) { create(:question, user: user) }
+  let(:answer) { create(:answer, question: question, user: user) }
 
-  describe 'POST #create' do
-    before { login(user) }
-    let!(:count) { Answer.count }
-
-    context 'with valid attributes' do
-      before { post :create, params: { answer: attributes_for(:answer), question_id: question, user_id: user.id }, format: :js }
-
-      it 'saves a new answer in the DB' do
-        expect(Answer.count).to eq count + 1
+  context 'Unauthenticated clearance' do
+    describe 'access denied for' do
+      it 'POST #create' do
+        post :create, params: { answer: attributes_for(:answer), question_id: question, user_id: user }
+        expect(response).to redirect_to new_user_session_path
       end
 
-      it 'new answer belongs to appropriate question' do
-        expect(assigns(:answer).question_id).to eq question.id
+      it 'DELETE #destroy' do
+        delete :destroy, params: { id: answer, question_id: question }
+        expect(response).to redirect_to new_user_session_path
       end
 
-      it 'renders create view' do
-        expect(response).to render_template :create
-      end
-    end
-
-    context 'with invalid attributes' do
-      before { post :create, params: { answer: attributes_for(:answer, :invalid), question_id: question, user_id: user.id }, format: :js }
-
-      it 'does not save the question' do
-        expect(Answer.count).to eq count
+      it 'PATCH #update' do
+        patch :update, params: { id: answer, answer: { body: FFaker::Book.description } }
+        expect(response).to redirect_to new_user_session_path
       end
 
-      it 'renders create view' do
-        expect(response).to render_template :create
+      it 'POST #mark_as_best' do
+        post :mark_as_best, params: { id: answer, question_id: question }
+        expect(response).to redirect_to new_user_session_path
       end
     end
   end
 
-  describe 'DELETE #destroy' do
+  context 'Authenticated clearance' do
     before { login(user) }
 
-    it 'deletes the answer' do
-      expect { delete :destroy, params: { id: answer, question_id: question.id }, format: :js }.to change(Answer, :count).by(-1)
-    end
-  end
+    describe 'POST #create' do
+      context 'with valid attributes' do
+        it 'saves a new answer in the DB' do
+          expect { post :create, params: { answer: attributes_for(:answer), question_id: question, user_id: user }, format: :js }.to change(Answer, :count).by(1)
+        end
 
-  describe 'PATCH #update' do
-
-    before { login(user) }
-
-    context 'with valid attributes' do
-      it 'changes answer attributes' do
-        patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
-        answer.reload
-        expect(answer.body).to eq('new body')
+        it 'renders create view' do
+          post :create, params: { answer: attributes_for(:answer), question_id: question, user_id: user }, format: :js
+          expect(response).to render_template :create
+        end
       end
 
-      it 'renders update view' do
-        patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
-        expect(response).to render_template :update
+      context 'with invalid attributes' do
+        it 'does not save the question' do
+          expect { post :create, params: { answer: attributes_for(:answer, :invalid), question_id: question, user_id: user }, format: :js }.to_not change(Answer, :count)
+        end
+
+        it 'renders create view' do
+          post :create, params: { answer: attributes_for(:answer, :invalid), question_id: question, user_id: user }, format: :js
+          expect(response).to render_template :create
+        end
       end
     end
 
-    context 'with invalid attributes' do
-      it 'does not change answer attributes' do
-        expect do
+    describe 'DELETE #destroy' do
+      let!(:answer) { create(:answer, question: question, user: user) }
+
+      it 'deletes the answer' do
+        expect { delete :destroy, params: { id: answer, question_id: question.id }, format: :js }.to change(Answer, :count).by(-1)
+      end
+    end
+
+    describe 'PATCH #update' do
+      context 'with valid attributes' do
+        it 'changes answer attributes' do
+          patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
+          answer.reload
+          expect(answer.body).to eq('new body')
+        end
+
+        it 'renders update view' do
+          patch :update, params: { id: answer, answer: { body: 'new body' } }, format: :js
+          expect(response).to render_template :update
+        end
+      end
+
+      context 'with invalid attributes' do
+        it 'does not change answer attributes' do
+          expect do
+            patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js
+          end.to_not change(answer, :body)
+        end
+
+        it 'renders update view' do
           patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js
-        end.to_not change(answer, :body)
-      end
-
-      it 'renders update view' do
-        patch :update, params: { id: answer, answer: attributes_for(:answer, :invalid) }, format: :js
-        expect(response).to render_template :update
+          expect(response).to render_template :update
+        end
       end
     end
-  end
 
-  describe 'POST #mark_as_best' do
-
-    let!(:answer2) { create(:answer, question: question, user: user) }
-    let!(:answer3) { create(:answer, question: question, user: user) }
-
-    before { login(user) }
-
-    it 'sets best attribute of an answer to true' do
-      post :mark_as_best, params: { id: answer, question_id: question.id }
-      expect(assigns(:answer).best).to eq true
-    end
-
-    it 'makes sure that only one answer to current question has best attribute set on true' do
-      post :mark_as_best, params: { id: answer }
-
-      expect(assigns(:answer).best).to eq true
-      expect(answer2.best).to eq false
-      expect(answer3.best).to eq false
+    describe 'POST #mark_as_best' do
+      it 'sets best attribute of an answer to true' do
+        post :mark_as_best, params: { id: answer, question_id: question.id }
+        expect(assigns(:answer).best).to eq true
+      end
     end
   end
 end
