@@ -1,6 +1,6 @@
 import consumer from "./consumer"
 
-consumer.subscriptions.create({ channel: "AnswersChannel", question_id: gon.question_id }, {
+consumer.subscriptions.create({ channel: "AnswersChannel", question_id: gon.question_id}, {
   connected() {
     // Called when the subscription is ready for use on the server
   },
@@ -12,9 +12,9 @@ consumer.subscriptions.create({ channel: "AnswersChannel", question_id: gon.ques
   received(data) {
     // Called when there's incoming data on the websocket for this channel
 
-    if (gon.current_user != null && gon.current_user.id == data['user_id']) { return; }
+    if (gon.current_user_id != null && gon.current_user_id == data['user_id']) { return; }
 
     var body = data['answer']['body']
-    $('.answers#ans').append("New answer appeared: " + body);
+    $('.answers#ans').append("New answer! " + body);
   }
 });

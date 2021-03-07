@@ -6,11 +6,12 @@ feature 'User can create question', %q{
   I'de like to be able to ask a question
 } do
 
-  given(:user) { create(:user) }
+  given(:user1) { create(:user) }
+  given(:user2) { create(:user) }
 
   describe 'Authenticated user' do
     background do
-      login(user)
+      login(user1)
 
       visit questions_path
       click_on 'Ask question'
@@ -48,5 +49,31 @@ feature 'User can create question', %q{
     visit questions_path
 
     expect(page).to_not have_content 'Ask question'
+  end
+
+  scenario 'Question appears on others user page' do
+    Capybara.using_session('other_user') do
+      login(user2)
+      visit questions_path
+    end
+
+    Capybara.using_session('main_user') do
+      login(user1)
+      visit questions_path
+      click_on 'Ask question'
+
+      fill_in 'Title', with: 'Test question'
+      fill_in 'Body', with: 'text'
+      click_on 'Ask'
+
+      expect(page).to have_content 'Test question'
+      expect(page).to have_content 'text'
+    end
+
+    Capybara.using_session('other_user') do
+      visit questions_path
+
+      expect(page).to have_content 'Test question'
+    end
   end
 end

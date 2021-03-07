@@ -21,7 +21,9 @@ module Comments
   end
 
   def broadcast_comment
-    ActionCable.server.broadcast("comments_stream_#{@commentable.id}", comment: @comment) unless @comment.errors.any?
+    if @commentable.class == 'Question'
+      ActionCable.server.broadcast("comments_stream_#{@commentable.id}", comment: @comment) unless @comment.errors.any?
+    end
   end
 
 end

@@ -1,42 +1,46 @@
-p= "Title: #{@question.title}"
-p= "Body: #{@question.body}"
+.question*{ data: { question_id: @question.id } }
 
-= render 'shared/likes', resource: @question
+  p= "Title: #{@question.title}"
+  p= "Body: #{@question.body}"
 
-.comments
-  = render @question.comments
-  - if user_signed_in?
-    = form_with model: [@question, @question.comments.build], url: polymorphic_path([:create_comment, @question]) do |f|
-      p
-        = f.label :body
-        = f.text_area :body
-        = f.submit 'Comment'
+  .question-data*{data: {first_attribute: 'first value', second_attribute: 'second value'} }
 
-- if @question.files.attached?
-  - @question.files.each do |file|
-    p= link_to file.filename.to_s, url_for(file)
-    '
-    - if current_user&.is_author?(@question)
-    = link_to 'Delete', delete_attachment_question_path(@question, delete_id: file.id), method: :delete
+  = render 'shared/likes', resource: @question
 
-.links
-  p Links:
-  ul
-    = render 'shared/links_list', resource: @question
+  .comments#ques
+    = render @question.comments
+    - if user_signed_in?
+      = form_with model: [@question, @question.comments.build], url: polymorphic_path([:create_comment, @question]) do |f|
+        p
+          = f.label :body
+          = f.text_area :body
+          = f.submit 'Comment'
 
-p= "Answers:"
-.answers#ans
-  = render @question.answers
+  - if @question.files.attached?
+    - @question.files.each do |file|
+      p= link_to file.filename.to_s, url_for(file)
+      '
+      - if current_user&.is_author?(@question)
+      = link_to 'Delete', delete_attachment_question_path(@question, delete_id: file.id), method: :delete
 
-.answer-errors
+  .links
+    p Links:
+    ul
+      = render 'shared/links_list', resource: @question
 
-= form_with model: [@question, @answer], class: 'new-answer' do |f|
-  = f.label :body
-  = f.text_area :body
-  = f.label :files
-  = f.file_field :files, multiple: true, direct_upload: true
+  p= "Answers:"
+  .answers#ans
+    = render @question.answers
 
-  p Links:
-  = render 'shared/add_links', f: f
+  .answer-errors
 
-  = f.submit 'Post answer'
+  = form_with model: [@question, @answer], class: 'new-answer' do |f|
+    = f.label :body
+    = f.text_area :body
+    = f.label :files
+    = f.file_field :files, multiple: true, direct_upload: true
+
+    p Links:
+    = render 'shared/add_links', f: f
+
+    = f.submit 'Post answer'

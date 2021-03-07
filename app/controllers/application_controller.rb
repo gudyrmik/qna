@@ -4,6 +4,6 @@ class ApplicationController < ActionController::Base
   private
 
   def set_params_for_gon
-    gon.current_user = current_user
+    gon.current_user_id = current_user.id if current_user
   end
 end

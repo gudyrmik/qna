@@ -71,7 +71,7 @@ class QuestionsController < ApplicationController
 
   def question_params
     params.require(:question).permit(:title, :body, files: [],
-                                      links_attributes: [:name, :url, :_destroy],
-                                      reward_attributes: [:title, :image]).merge!(user_id: current_user.id)
+                                     links_attributes: [:name, :url, :_destroy],
+                                     reward_attributes: [:title, :image]).merge!(user_id: current_user.id)
   end
 end

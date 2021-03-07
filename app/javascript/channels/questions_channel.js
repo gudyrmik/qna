@@ -12,12 +12,12 @@ consumer.subscriptions.create("QuestionsChannel", {
   received(data) {
     // Called when there's incoming data on the websocket for this channel
 
-    if (gon.current_user != null && gon.current_user.id == data['user_id']) { return; }
+    if (gon.current_user_id != null && gon.current_user_id == data['user_id']) { return; }
 
-    var title = "<p><a href=questions/" + data['question']['id'] + ">" + data['question']['title'] + "</a></p>"
-    var edit = "<p><a href=questions/" + data['question']['id'] + "/edit>Edit " + data['question']['title'] + "</p>"
-    var del = "<p><a href=questions/" + data['question']['id'] + " data-method=\"delete\">Delete " + data['question']['title'] + "</p>"
+    var title = "New question!<p><a href=questions/" + data['question']['id'] + ">" + data['question']['title'] + "</a></p>"
+    // var edit = "<p><a href=questions/" + data['question']['id'] + "/edit>Edit " + data['question']['title'] + "</p>"
+    // var del = "<p><a href=questions/" + data['question']['id'] + " data-method=\"delete\">Delete " + data['question']['title'] + "</p>"
 
-    $('.questions').append(title + edit + del);
+    $('.questions').append(title);
   }
 });
