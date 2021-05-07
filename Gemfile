@@ -30,7 +30,7 @@ gem "cocoon"
 gem "octokit"
 gem 'gon'
 gem 'omniauth'
-gem 'omniauth-github'
+gem 'omniauth-github', github: 'omniauth/omniauth-github', branch: 'master'
 gem 'omniauth-vkontakte'
 
 # Reduces boot times through caching; required in config/boot.rb

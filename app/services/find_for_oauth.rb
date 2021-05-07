@@ -1,3 +1,0 @@
-class Services::FindForOauth
-
-end
