@@ -26,12 +26,14 @@ gem 'slim-rails'
 # gem 'image_processing', '~> 1.2'
 gem 'devise', github: 'heartcombo/devise', branch: 'ca-omniauth-2'
 gem 'aws-sdk-s3', require: false
+gem 'capybara-email'
 gem "cocoon"
 gem "octokit"
 gem 'gon'
 gem 'omniauth'
 gem 'omniauth-github', github: 'omniauth/omniauth-github', branch: 'master'
 gem 'omniauth-vkontakte'
+gem "omniauth-rails_csrf_protection", "~> 1.0"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
