@@ -25,14 +25,14 @@ class Ability
   def user_abilities
     guest_abilities
     can :create, [Question, Answer, Comment]
-    can [:update, :destroy], [Question, Answer, Comment], user: user
+    can [:update, :destroy], [Question, Answer, Comment], user_id: user.id
     can :create_comment, [Question, Answer]
     can :mark_as_best, Answer do |answer|
-      answer.user != user && answer.question.user == user
+      answer.user_id != user.id && answer.question.user_id == user.id && !User.is_author?(answer)
     end
 
     can :like, [Question, Answer] do |resource|
-      resource.user != user
+      !User.is_author?(resource)
     end
   end
 end
