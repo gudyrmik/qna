@@ -1,5 +1,6 @@
 - if user_signed_in?
-  p= link_to 'Ask question', new_question_path
+  - if can?(:create, Question)
+    p= link_to 'Ask question', new_question_path
   p= link_to 'Your rewards', rewards_path
 
   .questions
