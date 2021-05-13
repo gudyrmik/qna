@@ -28,11 +28,11 @@ class Ability
     can [:update, :destroy], [Question, Answer, Comment], user_id: user.id
     can :create_comment, [Question, Answer]
     can :mark_as_best, Answer do |answer|
-      answer.user_id != user.id && answer.question.user_id == user.id && !User.is_author?(answer)
+      !user.is_author?(answer) && user.is_author?(answer.question)
     end
 
     can :like, [Question, Answer] do |resource|
-      !User.is_author?(resource)
+      user.is_author?(resource)
     end
   end
 end

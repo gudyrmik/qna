@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :question do
     user { create :user }
-    title { "Question from #{user.email}" }
+    title { "Question from FactoryBot" }
     body { FFaker::Book.description }
 
     trait :invalid do

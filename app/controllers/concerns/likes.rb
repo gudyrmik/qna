@@ -6,6 +6,7 @@ module Likes
   end
 
   def like
+    authorize! :like, [Question, Answer]
     return render_errors if current_user.is_author?(@likeable)
 
     @likeable.like(current_user)

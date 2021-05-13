@@ -3,6 +3,8 @@ class QuestionsController < ApplicationController
   before_action :find_question, only: [:edit, :show, :update, :destroy, :delete_attachment]
   after_action :broadcast_question, only: :create
 
+  authorize_resource
+
   include Likes
   include Comments
 

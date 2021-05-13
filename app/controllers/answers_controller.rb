@@ -4,6 +4,8 @@ class AnswersController < ApplicationController
   before_action :find_answer, only: [:destroy, :update, :mark_as_best, :delete_attachment]
   after_action :broadcast_answer, only: :create
 
+  authorize_resource
+
   include Likes
   include Comments
 
