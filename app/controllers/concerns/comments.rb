@@ -7,7 +7,7 @@ module Comments
   end
 
   def create_comment
-    authorize! :create_comment, [Question, Answer]
+    authorize! :create_comment, @commentable
     @comment = @commentable.comment(current_user, comment_params)
   end
 
