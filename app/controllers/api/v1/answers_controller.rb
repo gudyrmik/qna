@@ -15,7 +15,7 @@ class Api::V1::AnswersController < Api::V1::BaseController
 
   def create
     @answer = @question.answers.new(answer_params)
-    @answer.user = current_resource_owner
+    # @answer.user = current_resource_owner
     if @answer.save
       render json: @answer, status: :created
     else

@@ -1,7 +1,7 @@
 shared_examples_for 'API Authorizable' do
   context 'Unauthorizes' do
     it 'returns 401 if no access token provided' do
-      do_request(method, api_path, headers: headers)
+      do_request(method, api_path, params: request_params ||= nil, headers: headers)
       expect(response.status).to eq 401
     end
 
@@ -25,5 +25,11 @@ shared_examples_for 'Private Fields Non-Returnable' do
     private_fields.each do |private_field|
       expect(resource_response).to_not have_key(private_field)
     end
+  end
+end
+
+shared_examples_for 'Resource Unauthorizable' do
+  it 'returns fail status' do
+    expect(response).to_not be_successful
   end
 end

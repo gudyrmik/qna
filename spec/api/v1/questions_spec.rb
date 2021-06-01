@@ -1,9 +1,15 @@
 require 'rails_helper'
 
 describe 'Questions API', type: :request do
+  let(:me) { create(:user) }
   let(:headers) {
     {
       "CONTENT-TYPE" => "application/json",
+      "ACCEPT" => "application/json"
+    }
+  }
+  let(:headers_no_content_type) {
+    {
       "ACCEPT" => "application/json"
     }
   }
@@ -137,14 +143,15 @@ describe 'Questions API', type: :request do
   end
 
   describe 'POST /api/v1/questions' do
-    let(:api_path) { "/api/v1/questions/" }
+    let(:api_path) { '/api/v1/questions' }
     let(:method) { :post }
-    let(:request_params) { { access_token: access_token.token, question: question } }
+    let(:headers) { headers_no_content_type }
 
     it_behaves_like 'API Authorizable'
 
     context 'valid question creation attempt' do
       let(:question) { { title: 'MyTitle', body: 'MyBody' } }
+      let(:request_params) { { access_token: access_token.token, question: question } }
 
       before { do_request(method, api_path, params: request_params, headers: headers) }
 
@@ -159,6 +166,7 @@ describe 'Questions API', type: :request do
 
     context 'invalid question creation attempt' do
       let(:question) { { title: 'MyTitle', body: '' } }
+      let(:request_params) { { access_token: access_token.token, question: question } }
 
       before { do_request(method, api_path, params: request_params, headers: headers) }
 
@@ -168,6 +176,71 @@ describe 'Questions API', type: :request do
 
       it 'returns error message' do
         expect(json['errors']).to have_key('body')
+      end
+    end
+  end
+
+  describe 'PATCH /api/v1/questions/:id' do
+    let(:api_path) { "/api/v1/questions/#{question.id}" }
+    let(:method) { :patch }
+    let(:question) { create(:question, user: me) }
+    let(:headers) { headers_no_content_type }
+
+    it_behaves_like 'API Authorizable' do
+      let(:request_params) {}
+    end
+
+    before { do_request method, api_path, params: request_params, headers: headers }
+
+    context 'authorized' do
+      let(:request_params1) { { access_token: access_token.token, question: { title: 'Other' } } }
+
+      it 'returns success status' do
+        expect(response).to be_successful
+      end
+
+      include_examples 'Public Fields Returnable' do
+        let(:fields) { %w[id title body created_at updated_at] }
+        let(:resource_response) { json['question'] }
+        let(:resource) { Question.find(question.id) }
+      end
+
+      include_examples 'Resource Unauthorizable' do
+        let(:question) { create(:question) }
+        let(:request_params) { { access_token: access_token.token } }
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/questions/:id' do
+    let(:api_path) { "/api/v1/questions/#{question.id}" }
+    let(:method) { :delete }
+    let(:request_params) { { access_token: access_token.token } }
+    before { do_request method, api_path, params: request_params, headers: headers}
+
+    it_behaves_like 'API Authorizable' do
+      let(:question) { create(:question) }
+    end
+
+    include_examples 'Resource Unauthorizable' do
+      let(:question) { create(:question) }
+    end
+
+    context 'authorized' do
+      let(:question) { create(:question, user: me) }
+
+      it 'returns successful status' do
+        expect(response).to be_successful
+      end
+
+      it 'question not founded' do
+        expect { Question.find(question.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      include_examples 'Public Fields Returnable' do
+        let(:fields) { %w[id title body created_at updated_at] }
+        let(:resource_response) { json['question'] }
+        let(:resource) { question }
       end
     end
   end

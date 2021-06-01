@@ -30,9 +30,9 @@ Rails.application.routes.draw do
   resources :links, only: :destroy
   resources :rewards, only: :index
 
-  namespace :api do
+  namespace :api, defaults: { format: :json } do
     namespace :v1 do
-      resources :profiles, only: :index do
+      resources :profiles, only: [:index] do
         get :me, on: :collection
       end
 

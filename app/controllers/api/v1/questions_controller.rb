@@ -1,5 +1,5 @@
 class Api::V1::QuestionsController < Api::V1::BaseController
-  before_action :find_question, only: %i[show answers update destroy]
+  before_action :find_question, only: %i[show update destroy]
 
   authorize_resource except: [:answers]
 
